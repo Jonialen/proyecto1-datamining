@@ -116,7 +116,19 @@ La variable principal de análisis numérico es `edadif` (edad del difunto):
 - **Asimetría:** -0.536 (sesgada a la izquierda)
 - **Rango intercuartílico:** Q1=35, Q3=78 (IQR=43)
 
-No se detectaron outliers con el método IQR (1.5×IQR), lo cual es coherente con el amplio rango natural de edades de fallecimiento.
+No se detectaron outliers con el método IQR (1.5xIQR), lo cual es coherente con el amplio rango natural de edades de fallecimiento.
+
+#### Histogramas
+
+![Distribución de variables numéricas](figures/fig_01.png)
+
+La distribución de edad de fallecimiento es bimodal: presenta un pico en edades avanzadas (70-85 años) y un pico secundario en la infancia (mortalidad neonatal), patrón típico de países en desarrollo.
+
+#### Boxplots
+
+![Boxplots de variables numéricas](figures/fig_02.png)
+
+El boxplot de `edadif` confirma la asimetría negativa y el amplio rango intercuartílico. No se identifican valores atípicos fuera de los límites IQR.
 
 #### Distribución
 
@@ -125,7 +137,7 @@ El test de **Shapiro-Wilk** (muestra de 5,000 observaciones) rechaza la hipótes
 - `edadif`: W=0.9322, p=6.88e-43 -> **No normal**
 - `diaocu`: W=0.9543, p=6.11e-37 -> **No normal**
 
-La distribución de edad de fallecimiento es bimodal: presenta un pico en edades avanzadas (70-85 años) y un pico secundario en la infancia (mortalidad neonatal), patrón típico de países en desarrollo.
+Dado que las variables no siguen una distribución normal, se utilizan pruebas no paramétricas (Kruskal-Wallis) en las hipótesis que involucran comparación de grupos.
 
 ### 5.2 Variables Categóricas
 
@@ -137,19 +149,35 @@ Las tablas de frecuencia revelan los patrones más relevantes:
 - **Escolaridad:** Ninguna (52.2%) y Primaria (30.3%) dominan
 - **Pueblo de pertenencia:** Ladino/Mestizo (47.2%) y Maya (27.9%) son los principales grupos
 
+![Distribución por sexo](figures/fig_03.png)
+
+![Distribución por asistencia médica](figures/fig_05.png)
+
+![Distribución por escolaridad](figures/fig_06.png)
+
 ### 5.3 Correlaciones
+
+![Matriz de correlación](figures/fig_13.png)
 
 Con solo 2 variables numéricas significativas (edad y día de ocurrencia), la matriz de correlación no revela relaciones lineales fuertes. El análisis más rico se obtiene mediante tablas cruzadas de variables categóricas.
 
+![Tablas cruzadas: asistencia por área geográfica](figures/fig_15.png)
+
 ### 5.4 Análisis Temporal
 
-Los registros por año muestran una tendencia creciente en el número de defunciones registradas, con un pico notable en 2020-2021 coincidente con la pandemia de COVID-19. La distribución mensual es relativamente uniforme, sin estacionalidad marcada.
+![Defunciones registradas por año (2012-2023)](figures/fig_19.png)
+
+Los registros por año muestran una tendencia creciente en el número de defunciones registradas, con un pico notable en 2020-2021 coincidente con la pandemia de COVID-19.
+
+![Distribución mensual de defunciones](figures/fig_20.png)
+
+La distribución mensual es relativamente uniforme, sin estacionalidad marcada.
 
 ---
 
 ## 6. Hipótesis de Investigación
 
-Para cada hipótesis se definió una hipótesis nula (H0) y una alternativa (H1), evaluadas con nivel de significancia α = 0.05.
+Para cada hipótesis se definió una hipótesis nula (H0) y una alternativa (H1), evaluadas con nivel de significancia alpha = 0.05.
 
 ### H1: Impacto del COVID-19 en departamentos con menor acceso a salud
 
@@ -159,6 +187,8 @@ Para cada hipótesis se definió una hipótesis nula (H0) y una alternativa (H1)
 - **H1:** La proporción difiere significativamente entre departamentos.
 - **Prueba:** Chi-cuadrado de independencia
 
+![Proporción de defunciones COVID-19 sin asistencia por departamento](figures/fig_24.png)
+
 **Resultados:** De las 24,579 defunciones por COVID-19 (códigos CIE-10 U07):
 
 - Sololá: 35.0% sin asistencia (el más alto)
@@ -166,7 +196,7 @@ Para cada hipótesis se definió una hipótesis nula (H0) y una alternativa (H1)
 - Totonicapán: 26.1% sin asistencia
 - Guatemala capital: 0.3% sin asistencia (el más bajo)
 
-**Prueba estadística:** χ² = 3,322.04, gl = 21, p < 0.001
+**Prueba estadística:** X2 = 3,322.04, gl = 21, p < 0.001
 
 **Decisión:** Se rechaza H0. La desasistencia médica en muertes COVID depende significativamente del departamento. Los departamentos del altiplano occidental absorbieron la pandemia con recursos mínimos.
 
@@ -182,7 +212,9 @@ Para cada hipótesis se definió una hipótesis nula (H0) y una alternativa (H1)
 - **H1:** Al menos un nivel educativo tiene una distribución significativamente diferente.
 - **Prueba:** Kruskal-Wallis H (no paramétrica, dado que `edadif` no sigue distribución normal)
 
-**Resultados — Medianas por nivel educativo:**
+![Distribución de edad de fallecimiento por nivel educativo](figures/fig_25.png)
+
+**Resultados -- Medianas por nivel educativo:**
 
 | Nivel | Mediana (años) |
 |-------|---------------|
@@ -211,6 +243,8 @@ La brecha Ninguna vs Universitario es de solo 4 años (no 10). Se descubre una *
 - **H1:** La proporción disminuyó significativamente.
 - **Prueba:** Chi-cuadrado de proporciones
 
+![Evolución de la mortalidad infantil por departamento](figures/fig_26.png)
+
 **Resultados:**
 
 - 2012: 9.80% del total de defunciones (7,121 de 72,657)
@@ -219,7 +253,7 @@ La brecha Ninguna vs Universitario es de solo 4 años (no 10). Se descubre una *
 
 Los departamentos con mayor volumen (Guatemala, Huehuetenango, Alta Verapaz) concentran la mayor parte de las muertes infantiles, con disparidades persistentes.
 
-**Prueba estadística:** χ² = 1,255.77, gl = 1, p &lt; 0.001
+**Prueba estadística:** X2 = 1,255.77, gl = 1, p < 0.001
 
 **Decisión:** Se rechaza H0. La reducción es estadísticamente significativa.
 
@@ -234,6 +268,8 @@ Los departamentos con mayor volumen (Guatemala, Huehuetenango, Alta Verapaz) con
 - **H0:** La proporción de hombres jóvenes (15-40) en vía pública es menor o igual al 50%.
 - **H1:** La proporción es > 50%.
 - **Prueba:** Test z de proporción (una cola)
+
+![Distribución de edad por sexo en muertes en vía pública](figures/fig_27.png)
 
 **Resultados:**
 
@@ -260,6 +296,8 @@ El porcentaje (59.5%) no alcanza el 70% supuesto, pero la concentración en este
 - **H1:** La proporción es significativamente mayor en el área rural.
 - **Prueba:** Chi-cuadrado de independencia
 
+![Asistencia médica por área geográfica](figures/fig_28.png)
+
 **Resultados:**
 
 | Área | Sin asistencia | Con asistencia médica |
@@ -269,7 +307,7 @@ El porcentaje (59.5%) no alcanza el 70% supuesto, pero la concentración en este
 
 La brecha es de **3.7 veces** (85.6% vs 23.1%), superando ampliamente el factor de 2x supuesto.
 
-**Prueba estadística:** χ² = 178,929.08, gl = 1, p < 0.001
+**Prueba estadística:** X2 = 178,929.08, gl = 1, p < 0.001
 
 **Decisión:** Se rechaza H0. La asociación es estadísticamente significativa.
 
@@ -286,11 +324,13 @@ Se seleccionaron 10 variables para el agrupamiento:
 - **Numéricas (2):** día de ocurrencia, edad del difunto
 - **Categóricas (8):** sexo, período de edad, pueblo de pertenencia, estado civil, escolaridad, asistencia médica, lugar de ocurrencia, certificado de defunción
 
-Las variables categóricas se codificaron con one-hot encoding y todas se estandarizaron con StandardScaler. Se utilizó una muestra de 50,000 registros para el cálculo de K óptimo.
+Las variables categóricas se codificaron con one-hot encoding y todas se estandarizaron con StandardScaler. Se utilizó una muestra de 50,000 registros para el cálculo de K óptimo, y el clustering final se aplicó al dataset completo.
 
 ### 7.2 Selección de K
 
 Se evaluaron K=2 a K=8 con los métodos del codo e índice de silueta:
+
+![Método del codo e índice de silueta](figures/fig_21.png)
 
 | K | Silueta |
 |---|---------|
@@ -304,14 +344,22 @@ Se evaluaron K=2 a K=8 con los métodos del codo e índice de silueta:
 
 Se seleccionó **K=5** por maximizar el coeficiente de silueta (0.1499). El valor relativamente bajo es esperado en datos sociodemográficos donde las fronteras entre perfiles no son discretas.
 
-### 7.3 Interpretación de Clusters
+### 7.3 Visualización con PCA
+
+![Clusters visualizados con PCA (2 componentes)](figures/fig_22.png)
+
+La reducción a 2 componentes principales permite observar la separación entre clusters, especialmente el cluster de mortalidad infantil (cluster 0) y el de jóvenes en vía pública (cluster 3).
+
+### 7.4 Interpretación de Clusters
+
+![Perfil numérico por cluster](figures/fig_23.png)
 
 | Cluster | Nombre | Edad Media | Sexo Dom. | Asistencia | Lugar | % Total |
 |---------|--------|-----------|-----------|------------|-------|---------|
 | 0 | Mortalidad Infantil/Neonatal | 6.1 | Hombre (56.1%) | Médica (64.0%) | Hospital Público (49.7%) | 8.2% |
 | 1 | Adultos Con Asistencia Médica | 60.6 | Hombre (54.1%) | Médica (99.0%) | Domicilio/Hospital | 39.7% |
 | 2 | Adultos Mayores Rurales (Sin Asistencia) | 63.7 | Hombre (52.0%) | Ninguna (90.3%) | Domicilio (99.5%) | 40.3% |
-| 3 | Jóvenes — Muerte Violenta | 38.5 | Hombre (82.2%) | Ninguna (78.2%) | Vía Pública (27.7%) | 8.6% |
+| 3 | Jóvenes -- Muerte Violenta | 38.5 | Hombre (82.2%) | Ninguna (78.2%) | Vía Pública (27.7%) | 8.6% |
 | 4 | Adultos No Indígenas (Mixto) | 58.5 | Hombre (59.0%) | Médica (50.8%) | Domicilio (55.3%) | 3.3% |
 
 **Observaciones:**
@@ -327,7 +375,7 @@ Se seleccionó **K=5** por maximizar el coeficiente de silueta (0.1499). El valo
 
 ### 8.1 Resumen de Hallazgos
 
-1. **Brecha de asistencia médica rural-urbana:** El hallazgo más contundente. El 85.6% de las defunciones rurales ocurre sin asistencia médica (3.7x la tasa urbana de 23.1%). Confirmado estadísticamente (χ² = 178,929, p < 0.001).
+1. **Brecha de asistencia médica rural-urbana:** El hallazgo más contundente. El 85.6% de las defunciones rurales ocurre sin asistencia médica (3.7x la tasa urbana de 23.1%). Confirmado estadísticamente (X2 = 178,929, p < 0.001).
 
 2. **COVID-19 exacerbó desigualdades existentes:** Los departamentos del altiplano occidental (Sololá, Huehuetenango, Totonicapán) absorbieron la pandemia con menos del 35% de asistencia médica en muertes COVID.
 
@@ -344,7 +392,7 @@ Se seleccionó **K=5** por maximizar el coeficiente de silueta (0.1499). El valo
 | 0 | Mortalidad Infantil/Neonatal | Menores de 1 año en hospitales |
 | 1 | Adultos Con Asistencia Médica | Fallecimiento institucionalizado |
 | 2 | Adultos Mayores Rurales | Sin asistencia, en domicilio |
-| 3 | Jóvenes — Muerte Violenta | Hombres en vía pública |
+| 3 | Jóvenes -- Muerte Violenta | Hombres en vía pública |
 | 4 | Adultos No Indígenas | Asistencia mixta |
 
 ### 8.3 Siguientes Pasos

@@ -387,7 +387,7 @@ Todas las pruebas dan p < 0.001 (practicamente 0). Esto es **normal y esperado**
 
 **StandardScaler**: Se estandarizan todas las variables a media=0, desviacion=1. Sin esto, `edadif` (rango 0-110) dominaria sobre las variables binarias (rango 0-1).
 
-**Muestra para K optimo**: Se usan 50,000 registros para evaluar diferentes K. El K-Means sobre 950K registros con K=2 a K=8 seria muy lento.
+**Muestra para K optimo**: Se usan 50,000 registros para evaluar diferentes K (el paso mas costoso computacionalmente). Sin embargo, el clustering FINAL con K=5 se aplica a TODOS los registros (~945K), no a la submuestra. Solo la busqueda de K usa muestra.
 
 ### 5.2 Seleccion de K
 
