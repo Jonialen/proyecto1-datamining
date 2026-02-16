@@ -62,6 +62,13 @@ def harmonize(
                 pl.col(col).cast(pl.Utf8, strict=False).replace(norm_map).alias(col)
             )
 
+    # 5b. Generic text cleaning: strip whitespace and normalize case for all Utf8 columns
+    for col in df.columns:
+        if df[col].dtype == pl.Utf8:
+            df = df.with_columns(
+                pl.col(col).str.strip_chars().str.to_titlecase().alias(col)
+            )
+
     # 6. Add metadata columns
     df = df.with_columns(
         pl.lit(year).cast(pl.Int16).alias("_year"),

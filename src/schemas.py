@@ -234,44 +234,31 @@ VALUE_NORMALIZATION: dict[str, dict[str, str]] = {
         "Unido(a)": "Unido",
         "Separado(a)": "Separado",
     },
-    "escivp": {
-        "Casado(a)": "Casado",
-        "Soltero(a)": "Soltero",
-        "Divorciado(a)": "Divorciado",
-        "Viudo(a)": "Viudo",
-        "Unido(a)": "Unido",
-        "Separado(a)": "Separado",
-    },
-    "escivm": {
-        "Casado(a)": "Casado",
-        "Soltero(a)": "Soltero",
-        "Divorciado(a)": "Divorciado",
-        "Viudo(a)": "Viudo",
-        "Unido(a)": "Unido",
-        "Separado(a)": "Separado",
+    # País de residencia
+    "predif": {
+        "320.0": "Guatemala",
+        "9999.0": "Ignorado",
+        "320": "Guatemala",
+        "9999": "Ignorado",
     },
     # Pueblo de pertenencia
     "puedif": {
-        "Garífuna": "Garifuna",
-        "Garifuna": "Garifuna",
-        "Xinca": "Xinka",
-        "Xinka": "Xinka",
-    },
-    "pueblopp": {
-        "Garífuna": "Garifuna",
-        "Xinca": "Xinka",
-    },
-    "pueblopm": {
+        "Mestizo, Ladino": "Ladino/Mestizo",
+        "Mestizo / Ladino": "Ladino/Mestizo",
+        "Mestizo/Ladino": "Ladino/Mestizo",
+        "No Indigena": "No Indígena",
+        "Indigena": "Indígena",
         "Garífuna": "Garifuna",
         "Xinca": "Xinka",
     },
-    "puehom": {
-        "Garífuna": "Garifuna",
-        "Xinca": "Xinka",
-    },
-    "puemuj": {
-        "Garífuna": "Garifuna",
-        "Xinca": "Xinka",
+    # Período de edad
+    "perdif": {
+        "1 Año Y Más": "1 Año Y Más",
+        "1 Año Y Má": "1 Año Y Más",
+        "1 año y más": "1 Año Y Más",
+        "1 año y má": "1 Año Y Más",
+        "Menos de un mes": "Menos De Un Mes",
+        "1 a 11 meses": "1 A 11 Meses",
     },
     # Sexo
     "sexo": {
