@@ -149,11 +149,11 @@ Las tablas de frecuencia revelan los patrones más relevantes:
 - **Escolaridad:** Ninguna (52.2%) y Primaria (30.3%) dominan
 - **Pueblo de pertenencia:** Ladino/Mestizo (47.2%) y Maya (27.9%) son los principales grupos
 
-![Distribución por sexo](figures/fig_03.png)
+![Distribución por sexo](figures/fig_05.png)
 
-![Distribución por asistencia médica](figures/fig_05.png)
+![Distribución por asistencia médica](figures/fig_11.png)
 
-![Distribución por escolaridad](figures/fig_06.png)
+![Distribución por escolaridad](figures/fig_10.png)
 
 ### 5.3 Correlaciones
 
@@ -161,7 +161,7 @@ Las tablas de frecuencia revelan los patrones más relevantes:
 
 Con solo 2 variables numéricas significativas (edad y día de ocurrencia), la matriz de correlación no revela relaciones lineales fuertes. El análisis más rico se obtiene mediante tablas cruzadas de variables categóricas.
 
-![Tablas cruzadas: asistencia por área geográfica](figures/fig_15.png)
+![Tablas cruzadas: sexo por área geográfica](figures/fig_15.png)
 
 ### 5.4 Análisis Temporal
 
