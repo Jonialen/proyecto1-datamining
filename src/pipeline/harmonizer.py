@@ -55,18 +55,21 @@ def harmonize(
     # 4. Reorder to canonical order + keep only canonical columns
     df = df.select(canonical_cols)
 
-    # 5. Normalize text values
-    for col, norm_map in VALUE_NORMALIZATION.items():
-        if col in df.columns:
-            df = df.with_columns(
-                pl.col(col).cast(pl.Utf8, strict=False).replace(norm_map).alias(col)
-            )
-
-    # 5b. Generic text cleaning: strip whitespace and normalize case for all Utf8 columns
+    # 5. Text normalization and cleaning
+    # 5a. Generic cleaning: strip and Title Case to ensure consistency
     for col in df.columns:
         if df[col].dtype == pl.Utf8:
             df = df.with_columns(
                 pl.col(col).str.strip_chars().str.to_titlecase().alias(col)
+            )
+
+    # 5b. Specific value replacement based on VALUE_NORMALIZATION
+    for col, norm_map in VALUE_NORMALIZATION.items():
+        if col in df.columns:
+            # TitleCase keys in the map to match the previous step
+            tc_map = {k.strip().title(): v for k, v in norm_map.items()}
+            df = df.with_columns(
+                pl.col(col).cast(pl.Utf8, strict=False).replace(tc_map).alias(col)
             )
 
     # 6. Add metadata columns
