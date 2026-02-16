@@ -1,146 +1,135 @@
 # Roadmap - Proyecto 1: Análisis Exploratorio INE Guatemala
 
-## Estado actual
+## Lo que YA tienes (infraestructura + EDA base)
 
-Lo que YA está hecho:
-- Pipeline de datos (identify, loader, export) funcionando
-- MongoDB con los 5 datasets cargados (defunciones, nacimientos, matrimonios, divorcios, def. fetales)
-- Notebook `01_eda.ipynb` con:
-  - Descripción general del dataset (variables, tipos, observaciones)
-  - Estadísticas descriptivas de variables numéricas
-  - Test de normalidad (Shapiro-Wilk)
-  - Tablas de frecuencia y gráficos de barras para categóricas
-  - Histogramas, boxplots
-  - Matriz de correlación, scatter plots, crosstabs
-  - Análisis temporal (por año, por mes)
-  - Detección de outliers (IQR)
-  - Clustering (KMeans + codo + silueta + PCA)
-  - Perfiles de clusters (categóricos y numéricos)
+### Pipeline profesional (listo, funcional)
+- [x] `uv` como package manager con `pyproject.toml`
+- [x] Pipeline ETL: `.sav` → Polars → Parquet → DuckDB views
+- [x] Armonización de esquemas entre años (aliases, columnas faltantes)
+- [x] Labels SPSS aplicados inteligentemente (categóricas vs sentinelas)
+- [x] CLI: `uv run ine scan`, `uv run ine etl`, `uv run ine query`, `uv run ine info`
+- [x] 55 archivos procesados: 6M+ registros en ~73 MB de parquet
+- [x] DuckDB para queries analíticas, MongoDB opcional para documentos
+- [x] API de alto nivel para notebooks: `load()`, `agg()`, `yearly_counts()`
+
+### Notebook `01_eda.ipynb` (EDA genérico listo)
+- [x] Sección 1: Descripción general (variables, tipos, observaciones, conteos)
+- [x] Sección 2: Variables numéricas (estadísticas descriptivas, histogramas, boxplots, normalidad Shapiro-Wilk)
+- [x] Sección 3: Variables categóricas (tablas de frecuencia, gráficos de barras)
+- [x] Sección 4: Relaciones (correlación, scatter plots, crosstabs)
+- [x] Sección 5: Análisis temporal (por año, por mes)
+- [x] Sección 6: Outliers (IQR)
+- [x] Sección 7: Clustering (KMeans + codo + silueta + PCA + perfiles)
 
 ---
 
-## Fase 1: Completar el análisis en el notebook
+## Lo que FALTA (contenido de entrega)
 
-### 1.1 Limpieza de datos documentada
-**Archivo:** `notebooks/01_eda.ipynb` (agregar celda después de cargar datos)
-- [ ] Documentar las categorías duplicadas encontradas y cómo se normalizaron (Casado/Casado(a), Garifuna/Garífuna, etc.)
-- [ ] Documentar los valores nulos: qué columnas tienen >50% nulos (`areag` 50%, `getdif` 92%, `caudefdescrip` 92%) y decisión tomada (excluirlas o no)
-- [ ] Documentar la conversión de `edadif` de string a numérica (valores centinela 999 → NaN)
-- [ ] Documentar la unión de archivos de distintos años (columnas varían entre formatos)
+### Fase 1: Completar análisis en el notebook (~5 hrs)
 
-### 1.2 Cinco preguntas/hipótesis (35 pts del análisis)
-**Archivo:** `notebooks/01_eda.ipynb` (nueva sección 8)
+#### 1.1 Documentar limpieza de datos (~30 min)
+Agregar celda después de cargar datos explicando:
+- [ ] Categorías normalizadas: Casado(a)→Casado, Garífuna→Garifuna, etc.
+- [ ] Columnas con alias entre años: `getdif`→`puedif`, `ocuhom`→`ciuohom`, etc.
+- [ ] Valores sentinela (999→NaN) vs labels categóricos (decisión >50%)
+- [ ] Columnas faltantes por año (rellenadas con null)
 
-Cada hipótesis necesita: supuesto inicial → análisis con código/tablas/gráficos → discusión si se confirma o refuta.
+#### 1.2 Cinco hipótesis con análisis (lo más pesado, ~3-4 hrs) — 35 pts
+Cada una necesita: **supuesto → código/tablas/gráficos → discusión confirmando/refutando**
 
 - [ ] **H1: "El COVID aumentó desproporcionadamente las defunciones en departamentos con menor acceso a salud"**
-  - Cruzar: `caudef` (U071) × `depreg` × `_year` × `asist`
-  - Gráfico: heatmap de tasa COVID por departamento, barras de asistencia médica pre/post COVID
+  - Cruzar: `caudef` × `depocu` × `_year` × `asist`
+  - Gráfico: heatmap tasa COVID por departamento, barras asistencia pre/post COVID
 
-- [ ] **H2: "Las personas sin escolaridad mueren más jóvenes que las personas con educación"**
+- [ ] **H2: "Las personas sin escolaridad mueren más jóvenes que las con educación"**
   - Cruzar: `escodif` × `edadif` × `sexo`
-  - Gráfico: boxplot de edad por escolaridad, separado por sexo
+  - Gráfico: boxplot edad por escolaridad, separado por sexo
 
-- [ ] **H3: "La mortalidad infantil ha disminuido uniformemente en todos los departamentos"**
-  - Cruzar: `perdif` × `depreg` × `_year`
-  - Gráfico: líneas de mortalidad infantil por departamento a lo largo del tiempo
+- [ ] **H3: "La mortalidad infantil disminuyó uniformemente en todos los departamentos"**
+  - Cruzar: `perdif` × `depocu` × `_year`
+  - Gráfico: líneas de mortalidad infantil por departamento en el tiempo
 
 - [ ] **H4: "Las muertes en vía pública afectan principalmente a hombres jóvenes"**
   - Cruzar: `ocur` × `sexo` × `edadif`
-  - Gráfico: histograma de edad en muertes vía pública por sexo, proporción temporal
+  - Gráfico: histograma edad en muertes vía pública por sexo
 
 - [ ] **H5: "La proporción de defunciones sin asistencia médica es mayor en zonas rurales"**
-  - Cruzar: `asist` × `areag` × `depreg`
-  - Gráfico: barras apiladas de asistencia por área geográfica y departamento
+  - Cruzar: `asist` × `areag` × `depocu`
+  - Gráfico: barras apiladas asistencia por área geográfica
 
-### 1.3 Clustering: interpretar y nombrar grupos
-**Archivo:** `notebooks/01_eda.ipynb` (sección 7, después del clustering)
-- [ ] Verificar que los clusters ya no agrupan por mes (después del fix)
-- [ ] Analizar el perfil de cada cluster con las variables categóricas y numéricas
-- [ ] Asignar un nombre descriptivo a cada cluster basado en sus características (ej: "Adultos mayores sin escolaridad fallecidos en domicilio", "Jóvenes con muerte violenta en vía pública")
-- [ ] Verificar calidad con el score de silueta y discutirlo
+> **Nota:** Las hipótesis usan `defunciones`, no `nacimientos`. Cambiar `DATASET = 'defunciones'` o cargar ambos.
+
+#### 1.3 Interpretar y nombrar clusters (~1 hr)
+- [ ] Analizar perfiles categóricos y numéricos de cada cluster
+- [ ] Asignar nombre descriptivo (ej: "Adultos mayores fallecidos en domicilio sin asistencia")
+- [ ] Tabla resumen: ID, nombre, %, características principales
+- [ ] Discutir score de silueta
 
 ---
 
-## Fase 2: Redacción del marco del proyecto
+### Fase 2: Marco del proyecto (~1 hr) — 30 pts
 
-### 2.1 Situación problemática (10 pts)
-**Archivo:** `notebooks/01_eda.ipynb` (nueva sección al inicio, después de la intro) o Google Docs
+#### 2.1 Situación problemática (10 pts)
+- [ ] Describir el contexto: mortalidad, acceso a salud, brecha educativa en Guatemala
+- [ ] Basarse en datos encontrados en el EDA (ej: "~50% mueren sin asistencia médica")
 
-Tema sugerido basado en los datos:
-> "Desigualdad en acceso a servicios de salud y su impacto en la mortalidad en Guatemala (2012-2022)"
+#### 2.2 Problema científico (10 pts)
+- [ ] Formular como pregunta científica
+  - Ej: "¿En qué medida el acceso a salud y nivel educativo determinan las condiciones de mortalidad en Guatemala entre 2012-2023?"
 
-Puntos a cubrir:
-- [ ] ~50% de defunciones ocurren sin asistencia médica
-- [ ] 62-65% mueren en domicilio (no en hospital)
-- [ ] Impacto diferencial del COVID en 2021-2022 (+43% defunciones)
-- [ ] Brecha educativa: personas sin escolaridad son 52% de defunciones
-- [ ] Mortalidad infantil bajando pero posiblemente desigual por región
-
-### 2.2 Problema científico (10 pts)
-- [ ] Enunciar el problema como pregunta científica
-  - Ejemplo: "¿En qué medida el acceso a servicios de salud y el nivel educativo determinan las condiciones de mortalidad en Guatemala, y cómo estas desigualdades se distribuyeron geográfica y temporalmente entre 2012 y 2022?"
-
-### 2.3 Objetivos (10 pts)
+#### 2.3 Objetivos (10 pts)
 - [ ] 1 objetivo general
-  - Ejemplo: "Analizar los factores sociodemográficos y geográficos asociados a las condiciones de mortalidad en Guatemala durante el período 2012-2022"
-- [ ] 2+ objetivos específicos medibles
-  - Ejemplo 1: "Cuantificar la relación entre nivel educativo y edad de defunción, segmentado por sexo y departamento"
-  - Ejemplo 2: "Evaluar el impacto del COVID-19 en la mortalidad por departamento, comparando tasas de asistencia médica pre y post pandemia"
+- [ ] 2+ objetivos específicos medibles y alcanzables
 
 ---
 
-## Fase 3: Hallazgos y conclusiones (20 pts)
+### Fase 3: Hallazgos y conclusiones (~1 hr) — 20 pts
 
-### 3.1 Resumen de hallazgos
-**Archivo:** `notebooks/01_eda.ipynb` (sección final)
-- [ ] Resumir los hallazgos principales del EDA
-- [ ] Resumir qué hipótesis se confirmaron y cuáles se refutaron
-- [ ] Destacar hallazgos inesperados
-
-### 3.2 Nombres de clusters
-- [ ] Tabla con: ID cluster, nombre, % del total, características principales
-
-### 3.3 Plan de siguientes pasos
-- [ ] Qué análisis adicionales harían (modelos predictivos, series temporales, etc.)
-- [ ] Qué datos adicionales serían útiles (censo, datos de hospitales, etc.)
-- [ ] Limitaciones identificadas en los datos
+- [ ] Resumen de hallazgos del EDA
+- [ ] Qué hipótesis se confirmaron/refutaron
+- [ ] Nombres de clusters con justificación
+- [ ] Plan de siguientes pasos (modelos predictivos, datos adicionales)
+- [ ] Limitaciones identificadas
 
 ---
 
-## Fase 4: Entregables
+### Fase 4: Entregables
 
-### 4.1 Informe en Google Docs
-- [ ] Crear Google Doc con el informe completo
-- [ ] Verificar que el historial de cambios esté visible
-- [ ] Formato formal: sin código, solo texto + tablas + gráficos exportados
-
-### 4.2 PDF
-- [ ] Exportar el Google Doc a PDF
-- [ ] Verificar que no tenga código visible
-
-### 4.3 Script Python
-- [ ] Verificar que `notebooks/01_eda.ipynb` + `src/` estén limpios y ejecutables
-- [ ] Agregar comentarios explicativos donde falten
-
-### 4.4 Repositorio GitHub
-- [ ] Inicializar git en el proyecto
-- [ ] Crear `.gitignore` (excluir rowdata/, .venv/, mongo_data/, __pycache__/)
-- [ ] Commit inicial con todo el código
-- [ ] Push a GitHub
-- [ ] Incluir link en el informe
+- [ ] **Google Doc**: informe formal (sin código), historial de cambios visible
+- [ ] **PDF**: exportar Google Doc
+- [ ] **Script/Notebook**: `01_eda.ipynb` limpio y ejecutable
+- [ ] **GitHub**: push con `.gitignore`, link en el informe
 
 ---
 
-## Orden de ejecución sugerido
+## Cómo correr Jupyter
+
+```bash
+# Desde la raíz del proyecto:
+uv run jupyter lab
+```
+
+Esto lanza Jupyter usando el venv de uv con todas las dependencias instaladas.
+
+## Cómo correr el pipeline
+
+```bash
+uv run ine scan              # Ver archivos clasificados
+uv run ine etl               # Pipeline completo (parquet + duckdb)
+uv run ine etl --skip-mongo  # Sin MongoDB
+uv run ine info              # Ver conteos
+uv run ine query "SELECT _year, COUNT(*) FROM defunciones GROUP BY _year ORDER BY _year"
+```
+
+---
+
+## Orden sugerido de ejecución
 
 ```
-1. Fase 1.1  → Documentar limpieza (rápido, ~30 min)
-2. Fase 1.2  → 5 hipótesis con análisis (lo más pesado, ~3-4 hrs)
-3. Fase 1.3  → Interpretar clusters (~1 hr)
-4. Fase 2    → Redactar problema/objetivos (~1 hr)
-5. Fase 3    → Hallazgos y conclusiones (~1 hr)
-6. Fase 4.4  → Subir a GitHub (~15 min)
-7. Fase 4.1  → Pasar al Google Doc (~2 hrs)
-8. Fase 4.2  → Exportar PDF (~10 min)
+1. Fase 1.1  → Documentar limpieza           (~30 min)
+2. Fase 1.2  → 5 hipótesis con análisis      (~3-4 hrs) ← lo más pesado
+3. Fase 1.3  → Interpretar clusters          (~1 hr)
+4. Fase 2    → Problema/objetivos            (~1 hr)
+5. Fase 3    → Hallazgos y conclusiones      (~1 hr)
+6. Fase 4    → Google Doc + PDF + GitHub     (~2-3 hrs)
 ```

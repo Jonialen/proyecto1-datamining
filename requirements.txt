@@ -1,9 +1,0 @@
-pyreadstat
-pymongo
-pandas
-numpy
-matplotlib
-seaborn
-scipy
-scikit-learn
-jupyterlab
